@@ -1,30 +1,37 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { AddCustomerPage } from '../../../src/pages/manager/AddCustomerPage';
+import { CustomersPage } from '../../../src/pages/manager/CustomersPage';
 
 let firstName;
 let lastName;
 let postalCode;
 
 test.beforeEach(async ({ page }) => {
-  /* 
-  Pre-conditons:
-  1. Open Add Customer page.
-  2. Fill the First Name.  
-  3. Fill the Last Name.
-  4. Fill the Postal Code.
-  5. Click [Add Customer].
-  */
+  const addCustomerPage = new AddCustomerPage(page);
+
   firstName = faker.person.firstName();
   lastName = faker.person.lastName();
   postalCode = faker.location.zipCode();
+
+  // 1-5. Відкриваємо сторінку додавання і створюємо клієнта
+  await page.goto('/manager/addCust');
+  await addCustomerPage.addCustomer(firstName, lastName, postalCode);
 });
 
 test('Assert manager can search customer by First Name', async ({ page }) => {
-  /* 
-  Test:
-  1. Open Customers page.
-  2. Fill the firstName to the search field
-  3. Assert customer row is present in the table. 
-  4. Assert no other rows is present in the table.
-  */
+  const customersPage = new CustomersPage(page);
+
+  // 1. Відкриваємо сторінку клієнтів
+  await page.goto('/manager/list');
+
+  // 2. Вводимо firstName у поле пошуку
+  await customersPage.search(firstName);
+
+  // 3. Перевіряємо, що рядок з клієнтом є в таблиці
+  const rows = page.locator('table tbody tr');
+  await expect(rows).toHaveCount(1);
+  await expect(rows).toContainText(firstName);
+
+  // 4. Додаткова перевірка (немає інших рядків — це вже покрив toHaveCount(1))
 });

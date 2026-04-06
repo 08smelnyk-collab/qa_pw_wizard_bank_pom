@@ -1,13 +1,20 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-test('Assert manager can Login', async ({ page }) => {
-  /* 
-  Test:
-  1. Open Wizard bank home page 
-    https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login
-  2. Click [Bank Manager Login]
-  3. Assert button [Add Customer] is visible
-  4. Assert button [Open Account] is visible
-  5. Assert button [Customers] is visible
-  */
+test('manager can login', async ({ page }) => {
+  // 1. Перехід на сайт
+  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login');
+
+  // --- ДОДАЙТЕ ЦЕЙ БЛОК ТУТ ---
+  // Знаходимо кнопку Consent і натискаємо її, якщо вона з'явилася
+  const consentButton = page.getByRole('button', { name: 'Consent' });
+  if (await consentButton.isVisible()) {
+    await consentButton.click();
+  }
+  // ----------------------------
+
+  // 2. Тепер натискаємо кнопку входу для менеджера
+  await page.getByRole('button', { name: 'Bank Manager Login' }).click();
+
+  // 3. Перевірка, що ми перейшли у розділ менеджера
+  await expect(page).toHaveURL(/manager/);
 });

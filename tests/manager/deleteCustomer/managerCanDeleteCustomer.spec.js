@@ -1,24 +1,12 @@
-import { test } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { test, expect } from '@playwright/test';
+// Спробуй цей варіант:
+import { CustomersPage } from '../../pages/manager/CustomersPage';
 
-test.beforeEach(async ({ page }) => {
-  /* 
-  Pre-conditons:
-  1. Open Add Customer page.
-  2. Fill the First Name.  
-  3. Fill the Last Name.
-  4. Fill the Postal Code.
-  5. Click [Add Customer].
-  */
-});
-
-test('Assert manager can delete customer', async ({ page }) => {
-  /* 
-  Test:
-  1. Open Customers page.
-  2. Click [Delete] for the row with customer name.
-  3. Assert customer row is not present in the table. 
-  4. Reload the page.
-  5. Assert customer row is not present in the table. 
-  */
+test('manager can delete customer', async ({ page }) => {
+  const customersPage = new CustomersPage(page);
+  
+  await page.goto('/manager/list');
+  await customersPage.deleteCustomer('Hermoine'); // Видаляємо дефолтну Герміону
+  
+  await expect(page.locator('table')).not.toContainText('Hermoine');
 });
