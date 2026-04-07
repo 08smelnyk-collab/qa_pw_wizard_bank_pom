@@ -1,20 +1,8 @@
 import { test, expect } from '@playwright/test';
+test('Manager can login', async ({ page }) => {
+  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/');
 
-test('manager can login', async ({ page }) => {
-  // 1. Перехід на сайт
-  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login');
+  await page.click('button[ng-click="manager()"]');
 
-  // --- ДОДАЙТЕ ЦЕЙ БЛОК ТУТ ---
-  // Знаходимо кнопку Consent і натискаємо її, якщо вона з'явилася
-  const consentButton = page.getByRole('button', { name: 'Consent' });
-  if (await consentButton.isVisible()) {
-    await consentButton.click();
-  }
-  // ----------------------------
-
-  // 2. Тепер натискаємо кнопку входу для менеджера
-  await page.getByRole('button', { name: 'Bank Manager Login' }).click();
-
-  // 3. Перевірка, що ми перейшли у розділ менеджера
-  await expect(page).toHaveURL(/manager/);
+  await expect(page.locator('button[ng-click="addCust()"]')).toBeVisible();
 });

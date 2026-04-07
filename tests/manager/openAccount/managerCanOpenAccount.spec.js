@@ -1,9 +1,17 @@
-import { test } from '@playwright/test';
-import { OpenAccountPage } from '../../../src/pages/manager/OpenAccountPage';
+import { test, expect } from '@playwright/test';
+test('Manager can open account', async ({ page }) => {
+  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/');;
 
-test('manager can open account for customer', async ({ page }) => {
-  const openAccountPage = new OpenAccountPage(page);
-  
-  await page.goto('/manager/openAccount');
-  await openAccountPage.openAccount('Hermoine Granger', 'Dollar');
+  await page.click('button[ng-click="manager()"]');
+  await page.click('button[ng-click="openAccount()"]');
+
+  await page.selectOption('#userSelect', { index: 1 });
+  await page.selectOption('#currency', 'Dollar');
+
+  page.on('dialog', async dialog => {
+    expect(dialog.message()).toContain('Account created successfully');
+    await dialog.accept();
+  });
+
+  await page.click('button[type="submit"]');
 });

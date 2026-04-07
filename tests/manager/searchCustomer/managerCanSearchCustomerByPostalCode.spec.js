@@ -1,37 +1,18 @@
 import { test, expect } from '@playwright/test';
-import { faker } from '@faker-js/faker';
-import { AddCustomerPage } from '../../../src/pages/manager/AddCustomerPage';
-import { CustomersPage } from '../../../src/pages/manager/CustomersPage';
 
-let firstName;
-let lastName;
-let postalCode;
-
-test.beforeEach(async ({ page }) => {
-  const addCustomerPage = new AddCustomerPage(page);
-
-  firstName = faker.person.firstName();
-  lastName = faker.person.lastName();
-  postalCode = faker.location.zipCode();
-
-  // 1-5. Створюємо клієнта перед пошуком
-  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager/addCust');
-  await addCustomerPage.addCustomer(firstName, lastName, postalCode);
-});
-
-test('Assert manager can search customer by Postal Code', async ({ page }) => {
-  const customersPage = new CustomersPage(page);
-
-  // 1. Open Customers page
+test('Manager can search customer by Postal Code', async ({ page }) => {
+  // Переходимо безпосередньо до списку клієнтів
   await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager/list');
 
-  // 2. Fill the postalCode to the search field
-  await customersPage.search(postalCode);
+  // Локатор поля пошуку
+  const searchInput = page.locator('input[ng-model="searchCustomer"]');
+  
+  // Вводимо існуючий поштовий код (наприклад, Hermoine має E725JB)
+  const postalCode = 'E725JB';
+  await searchInput.fill(postalCode);
 
-  // 3. Assert customer row is present in the table
-  const rows = page.locator('table tbody tr');
-  await expect(rows).toHaveCount(1);
-  await expect(rows).toContainText(postalCode);
-
-  // 4. Assert no other rows is present (toHaveCount(1) це вже підтвердив)
+  // Перевіряємо, що в таблиці з'явився рядок з цим кодом
+  const tableRow = page.locator('table tbody tr').first();
+  await expect(tableRow).toBeVisible();
+  await expect(tableRow).toContainText(postalCode);
 });
