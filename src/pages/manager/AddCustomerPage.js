@@ -1,20 +1,11 @@
+// В файлі AddCustomerPage.js
 export class AddCustomerPage {
   constructor(page) {
     this.page = page;
-    // Локатор для кнопки Consent (судячи зі скриншоту)
-    this.consentBtn = page.getByRole('button', { name: 'Consent' });
-    
     this.firstNameInput = page.locator('input[ng-model="fName"]');
     this.lastNameInput = page.locator('input[ng-model="lName"]');
     this.postCodeInput = page.locator('input[ng-model="postCd"]');
-    this.submitBtn = page.locator('button.btn-default');
-  }
-
-  async handleConsent() {
-    // Якщо банер з'являється, натискаємо його
-    if (await this.consentBtn.isVisible()) {
-      await this.consentBtn.click();
-    }
+    this.submitBtn = page.locator('form button[type="submit"]');
   }
 
   async addCustomer(fName, lName, pCode) {

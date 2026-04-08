@@ -1,8 +1,18 @@
 import { test, expect } from '@playwright/test';
-test('Manager can login', async ({ page }) => {
-  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/');
 
-  await page.click('button[ng-click="manager()"]');
+test('Customer can logout', async ({ page }) => {
 
-  await expect(page.locator('button[ng-click="addCust()"]')).toBeVisible();
+  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/customer');
+  
+  
+  await page.selectOption('#userSelect', { label: 'Harry Potter' });
+  await page.getByRole('button', { name: 'Login' }).click();
+  
+  const logoutButton = page.getByRole('button', { name: 'Logout' });
+  await expect(logoutButton).toBeVisible();
+  
+
+  await logoutButton.click();
+
+  await expect(page.locator('#userSelect')).toBeVisible();
 });

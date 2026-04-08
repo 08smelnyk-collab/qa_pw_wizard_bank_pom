@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
+
 test('Manager can choose currencies', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager/openAccount');
 
-  await page.click('button[ng-click="manager()"]');
-  await page.click('button[ng-click="openAccount()"]');
+  
+  await page.selectOption('#userSelect', { label: 'Harry Potter' });
 
-  const currencies = await page.locator('#currency option').allTextContents();
 
-  expect(currencies).toContain('Dollar');
-  expect(currencies).toContain('Pound');
-  expect(currencies).toContain('Rupee');
+  const currencyOptions = page.locator('#currency option');
+  
+
+  await expect(currencyOptions).toContainText(['Dollar', 'Pound', 'Rupee']);
 });
-await page.goto('https://www.globalsqa.com/angularJs-protractor/BankingProject/#/');
